@@ -187,7 +187,8 @@ export async function getPaymentDetails(req, res, next) {
     const usdcAmountInSmallestUnit = Math.floor(
       parseFloat(invoice.usdcAmount) * 1_000_000
     ).toString();
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:4000";
+    const backendUrl =
+      process.env.BACKEND_WALLET_ADDRESS || "http://localhost:4000";
 
     // IMPORTANT: resource points to THIS SAME endpoint
     // Client will retry THIS endpoint with X-PAYMENT header (x402 spec)
