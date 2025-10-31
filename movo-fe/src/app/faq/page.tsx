@@ -17,12 +17,12 @@ export default function FAQPage() {
     {
       question: "How to use Movo?",
       answer:
-        "Using Movo is simple: First, connect your crypto wallet to the platform. Then, create an invoice by entering your customer's details, amount, and currency. Share the invoice link with your customer, who can pay using USDC on Base network. Once paid, the payment is automatically converted to your preferred local currency and deposited to your account. You can track all transactions in real-time through your dashboard.",
+        "Using Movo is simple: First, connect your crypto wallet to the platform. Then, create an invoice by entering your customer's details, amount, and currency. Share the invoice link with your customer, who can pay using USDC on Hedera network. Once paid, the payment is automatically converted to your preferred local currency and deposited to your account. You can track all transactions in real-time through your dashboard.",
     },
     {
       question: "What cryptocurrencies are supported?",
       answer:
-        "Movo currently supports USDC (USD Coin) payments on the Base network. USDC is a stablecoin pegged to the US Dollar, providing price stability and fast transaction processing. We're continuously working to add support for more cryptocurrencies and blockchain networks.",
+        "Movo currently supports USDC (USD Coin) payments on the Hedera network. USDC is a stablecoin pegged to the US Dollar, providing price stability and fast transaction processing. We're continuously working to add support for more cryptocurrencies and blockchain networks.",
     },
     {
       question: "How long does it take to receive payments?",

@@ -478,13 +478,13 @@ export default function InvoiceDetailPage() {
                     <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
                       <Image
                         src="/base-network.svg"
-                        alt="base logo"
+                        alt="hedera logo"
                         width={25}
                         height={25}
                         className=""
                       />
                     </div>
-                    <span className="text-sm text-gray-900">Base Sepolia</span>
+                    <span className="text-sm text-gray-900">Hedera Testnet</span>
                   </div>
                 </div>
 
@@ -534,7 +534,7 @@ export default function InvoiceDetailPage() {
                         </svg>
                       </button>
                       <a
-                        href={`https://sepolia.basescan.org/tx/${invoice.paymentHash}`}
+                        href={`https://hashscan.io/testnet/transaction/${invoice.paymentHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-700"
@@ -610,7 +610,7 @@ export default function InvoiceDetailPage() {
                   {/* USDC Faucet Link */}
                   <div className="pt-3 text-center border-t border-gray-200">
                     <p className="text-sm text-gray-600">
-                      Need Base Sepolia USDC?{" "}
+                      Need Hedera Testnet USDC?{" "}
                       <a
                         href="https://faucet.circle.com/"
                         target="_blank"

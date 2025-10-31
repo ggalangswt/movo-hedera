@@ -5,7 +5,8 @@ import { useAccount, useBalance, useContractRead } from "wagmi";
 import { formatUnits } from "viem";
 import { mockErc20Abi } from "@/lib/abis/mockErc20Abis";
 import RefreshButton from "./ui/RefreshButton";
-const IDR_TOKEN_ADDRESS = "0x4ED137bc2369ea4c3BFD2f77171d02a45F7eFBf0";
+// MIDR Token Address on Hedera Testnet
+const IDR_TOKEN_ADDRESS = "0xd7d78C1758f4c26a166d06B7137D0123B9fd15f6";
 const IDR_DECIMALS = 2;
 
 interface BalanceCardProps {

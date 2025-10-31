@@ -57,13 +57,27 @@ Edit `.env` with your configuration:
 # Database
 DATABASE_URL="postgresql://user:password@localhost:5432/movo_db"
 
-# Wallet
-MERCHANT_WALLET_ADDRESS=0x...
-MERCHANT_PRIVATE_KEY=0x...
+# Server
+PORT=4000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:4000
 
-# x402
+# Wallet (Backend/Deployer Wallet)
+PRIVATE_KEY=0x...
+MERCHANT_WALLET_ADDRESS=0x...
+FACILITATOR_PRIVATE_KEY=0x...  # Optional: Separate facilitator wallet
+
+# Hedera Testnet Configuration
+HEDERA_RPC_URL=https://296.rpc.thirdweb.com
+X402_NETWORK=hedera-testnet
 X402_FACILITATOR_URL=https://x402.org/facilitator
-X402_NETWORK=base-sepolia
+
+# Smart Contracts (Hedera Testnet)
+CONTRACT_ADDRESS=0x...  # InvoicePayment contract address
+USDC_TOKEN_ADDRESS=0x0000000000000000000000000000000000068cDa  # Official USDC on Hedera Testnet
+MIDR_TOKEN_ADDRESS=0x...  # MockIDR token address
+BACKEND_WALLET_ADDRESS=0x...  # Backend wallet address (same as deployer)
 
 # Email (choose one)
 EMAIL_SERVICE=sendgrid

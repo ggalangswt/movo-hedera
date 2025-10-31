@@ -40,7 +40,7 @@ export function initializeCDP() {
 /**
  * Verify x402 payment using CDP
  */
-export async function verifyCDPPayment(paymentAuth, expectedAmount, network = 'base-sepolia') {
+export async function verifyCDPPayment(paymentAuth, expectedAmount, network = 'hedera-testnet') {
   try {
     if (!cdpClient) {
       cdpClient = initializeCDP();

@@ -1,7 +1,28 @@
-import { createWalletClient, createPublicClient, http, parseUnits } from "viem";
-import { baseSepolia } from "viem/chains";
+import { createWalletClient, createPublicClient, http, parseUnits, defineChain } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { logger } from "../utils/logger.js";
+
+// Define Hedera Testnet chain
+const hederaTestnet = defineChain({
+  id: 296,
+  name: 'Hedera Testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'HBAR',
+    symbol: 'HBAR',
+  },
+  rpcUrls: {
+    default: {
+      http: [process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Hashscan',
+      url: 'https://hashscan.io/testnet',
+    },
+  },
+});
 
 // InvoicePayment Contract ABI (full ABI from deployed contract)
 const INVOICE_PAYMENT_ABI = [
@@ -474,13 +495,13 @@ function initializeWalletClients() {
 
   walletClient = createWalletClient({
     account,
-    chain: baseSepolia,
-    transport: http(process.env.HEDERA_RPC_URL),
+    chain: hederaTestnet,
+    transport: http(process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'),
   });
 
   publicClient = createPublicClient({
-    chain: baseSepolia,
-    transport: http(process.env.HEDERA_RPC_URL),
+    chain: hederaTestnet,
+    transport: http(process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'),
   });
 }
 

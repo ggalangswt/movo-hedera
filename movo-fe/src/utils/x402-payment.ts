@@ -4,7 +4,29 @@
  */
 
 import { WalletClient } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { defineChain } from 'viem';
+
+// Define Hedera Testnet chain
+const hederaTestnet = defineChain({
+  id: 296,
+  name: 'Hedera Testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'HBAR',
+    symbol: 'HBAR',
+  },
+  rpcUrls: {
+    default: {
+      http: [process.env.NEXT_PUBLIC_HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Hashscan',
+      url: 'https://hashscan.io/testnet',
+    },
+  },
+});
 
 export interface PaymentDetails {
   x402Version: number;
@@ -62,12 +84,12 @@ export async function processX402Payment(
   const validAfter = 0;
   const validBefore = Math.floor(Date.now() / 1000) + 3600; // 1 hour
 
-  // EIP-3009 domain for USDC Base Sepolia
+  // EIP-3009 domain for USDC Hedera Testnet
   // Must match exact parameters from USDC contract
   const domain = {
-    name: 'USDC',  // Changed from 'USD Coin'
+    name: 'USDC',
     version: '2',
-    chainId: baseSepolia.id,
+    chainId: hederaTestnet.id,
     verifyingContract: acceptData.asset as `0x${string}`
   };
 

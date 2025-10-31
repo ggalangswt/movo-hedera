@@ -156,7 +156,7 @@ export async function getPaymentDetails(req, res, next) {
           usdcAmount: invoice.usdcAmount,
           midrAmount: swapResult.midrAmount,
           swapTxHash: swapResult.txHash,
-          network: process.env.X402_NETWORK || "base-sepolia",
+          network: process.env.X402_NETWORK || "hedera-testnet",
           paidAt: new Date(),
           settledAt: new Date(),
         },
@@ -191,9 +191,9 @@ export async function getPaymentDetails(req, res, next) {
 
     // IMPORTANT: resource points to THIS SAME endpoint
     // Client will retry THIS endpoint with X-PAYMENT header (x402 spec)
-    // Include facilitator URL so x402-fetch uses OUR facilitator, not x402.org
+    // Use local facilitator to avoid CORS issues - frontend can call backend directly
     const facilitatorUrl =
-      process.env.X402_FACILITATOR_URL || "https://x402.org/facilitator";
+      process.env.X402_FACILITATOR_URL || `${backendUrl}/api/facilitator`;
 
     return res.status(402).json({
       x402Version: 1,
@@ -201,11 +201,11 @@ export async function getPaymentDetails(req, res, next) {
       accepts: [
         {
           scheme: "exact",
-          network: process.env.X402_NETWORK || "base-sepolia",
+          network: process.env.X402_NETWORK || "hedera-testnet",
           maxAmountRequired: usdcAmountInSmallestUnit,
           asset:
             process.env.USDC_TOKEN_ADDRESS ||
-            "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+            "0x0000000000000000000000000000000000068cDa",
           payTo: invoice.merchant.walletAddress,
           resource: `${backendUrl}/api/payments/${invoiceId}/details`,
           description: `Invoice ${invoice.invoiceNo} - ${invoice.productName}`,
@@ -371,7 +371,7 @@ export async function processPayment(req, res, next) {
         usdcAmount: invoice.usdcAmount,
         midrAmount: swapResult.midrAmount,
         swapTxHash: swapResult.txHash,
-        network: process.env.X402_NETWORK || "base-sepolia",
+        network: process.env.X402_NETWORK || "hedera-testnet",
         paidAt: new Date(),
         settledAt: new Date(),
       },

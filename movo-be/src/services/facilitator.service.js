@@ -1,14 +1,36 @@
 /**
  * x402 Facilitator Service
- * Handles USDC payments on Base Sepolia with EIP-3009 transferWithAuthorization
+ * Handles USDC payments on Hedera Testnet with EIP-3009 transferWithAuthorization
  */
 
-import { createWalletClient, createPublicClient, http, parseAbi } from "viem";
-import { baseSepolia } from "viem/chains";
+import { createWalletClient, createPublicClient, http, parseAbi, defineChain } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { logger } from "../utils/logger.js";
 
-const USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+// Define Hedera Testnet chain
+const hederaTestnet = defineChain({
+  id: 296,
+  name: 'Hedera Testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'HBAR',
+    symbol: 'HBAR',
+  },
+  rpcUrls: {
+    default: {
+      http: [process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Hashscan',
+      url: 'https://hashscan.io/testnet',
+    },
+  },
+});
+
+// USDC address on Hedera Testnet
+const USDC_ADDRESS = "0x0000000000000000000000000000000000068cDa";
 
 // USDC EIP-3009 ABI
 const USDC_ABI = parseAbi([
@@ -31,13 +53,13 @@ export function initializeFacilitator() {
 
     walletClient = createWalletClient({
       account,
-      chain: baseSepolia,
-      transport: http("https://sepolia.base.org"),
+      chain: hederaTestnet,
+      transport: http(process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'),
     });
 
     publicClient = createPublicClient({
-      chain: baseSepolia,
-      transport: http("https://sepolia.base.org"),
+      chain: hederaTestnet,
+      transport: http(process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'),
     });
 
     logger.info("✅ Facilitator initialized");
@@ -59,7 +81,7 @@ export function getFacilitatorInfo() {
 
   return {
     status: "ok",
-    network: "base-sepolia",
+    network: process.env.X402_NETWORK || "hedera-testnet",
     wallet: account.address,
     usdcAddress: USDC_ADDRESS,
   };

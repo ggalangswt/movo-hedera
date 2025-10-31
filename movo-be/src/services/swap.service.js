@@ -1,7 +1,28 @@
-import { createWalletClient, http, parseUnits } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { createWalletClient, http, parseUnits, defineChain } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { logger } from '../utils/logger.js';
+
+// Define Hedera Testnet chain
+const hederaTestnet = defineChain({
+  id: 296,
+  name: 'Hedera Testnet',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'HBAR',
+    symbol: 'HBAR',
+  },
+  rpcUrls: {
+    default: {
+      http: [process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Hashscan',
+      url: 'https://hashscan.io/testnet',
+    },
+  },
+});
 
 // Mock swap for hackathon (in production, use DEX or swap protocol)
 export async function swapUSDCToMIDR(invoiceId, usdcAmount, merchantWallet) {
@@ -59,8 +80,8 @@ async function mockSwapTransaction(usdcAmount, midrAmount, toAddress) {
   const account = privateKeyToAccount(process.env.MERCHANT_PRIVATE_KEY);
   const client = createWalletClient({
     account,
-    chain: baseSepolia,
-    transport: http()
+    chain: hederaTestnet,
+    transport: http(process.env.HEDERA_RPC_URL || 'https://296.rpc.thirdweb.com')
   });
 
   // Approve USDC
