@@ -11,7 +11,7 @@ export default function Navbar() {
   const navItems = [
     {
       name: "Docs",
-      href: "https://movo-payment.gitbook.io/movo-base/",
+      href: "https://movo-payment.gitbook.io/movo-hedera/",
       icon: FiBook,
     },
     {
