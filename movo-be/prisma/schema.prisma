@@ -1,0 +1,111 @@
+// Prisma Schema for Movo Backend
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Merchant {
+  id                String    @id @default(uuid())
+  email             String    @unique
+  walletAddress     String    @unique
+  businessName      String?
+  name              String?
+  profileCompleted  Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  invoices          Invoice[]
+  
+  @@map("merchants")
+}
+
+model Invoice {
+  id                String         @id @default(uuid())
+  invoiceNo         String         @unique
+  
+  // Customer Information
+  customerEmail     String
+  customerName      String
+  
+  // Invoice Details
+  productName       String
+  description       String?
+  
+  // Amount & Currency
+  amount            Decimal        @db.Decimal(20, 2)
+  currency          String         // IDR, USD, etc.
+  
+  // USDC Conversion
+  usdcAmount        Decimal?       @db.Decimal(20, 6)
+  conversionRate    Decimal?       @db.Decimal(20, 2)
+  
+  // Status
+  status            InvoiceStatus  @default(PREPARED)
+  
+  // Payment Details
+  paymentHash       String?
+  paidAt            DateTime?
+  paidAmount        Decimal?       @db.Decimal(20, 6)
+  
+  // Timestamps
+  createdAt         DateTime       @default(now())
+  expiresAt         DateTime
+  updatedAt         DateTime       @updatedAt
+  
+  // Relations
+  merchantId        String
+  merchant          Merchant       @relation(fields: [merchantId], references: [id])
+  
+  paymentDetails    PaymentDetail?
+  
+  @@map("invoices")
+  @@index([status])
+  @@index([customerEmail])
+  @@index([invoiceNo])
+}
+
+model PaymentDetail {
+  id                String    @id @default(uuid())
+  
+  // x402 Payment Information
+  transactionHash   String    @unique
+  fromAddress       String
+  toAddress         String
+  
+  // USDC Payment
+  usdcAmount        Decimal   @db.Decimal(20, 6)
+  
+  // mIDR Settlement
+  midrAmount        Decimal?  @db.Decimal(20, 2)
+  swapTxHash        String?
+  
+  // Facilitator Info
+  facilitatorUrl    String?
+  network           String
+  
+  // Timestamps
+  paidAt            DateTime  @default(now())
+  settledAt         DateTime?
+  
+  // Relations
+  invoiceId         String    @unique
+  invoice           Invoice   @relation(fields: [invoiceId], references: [id])
+  
+  @@map("payment_details")
+}
+
+enum InvoiceStatus {
+  PREPARED
+  SENT
+  PENDING_PAYMENT
+  PAID
+  SETTLED
+  EXPIRED
+  CANCELLED
+}
+

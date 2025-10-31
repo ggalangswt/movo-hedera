@@ -1,0 +1,32 @@
+{
+  "name": "movo-be",
+  "version": "1.0.0",
+  "description": "Movo Backend API with x402 Payment Integration",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "test": "jest",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@coinbase/coinbase-sdk": "^0.25.0",
+    "@prisma/client": "^5.7.1",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "handlebars": "^4.7.8",
+    "nodemailer": "^6.9.7",
+    "pg": "^8.16.3",
+    "prisma": "^5.7.1",
+    "uuid": "^9.0.1",
+    "viem": "^2.38.0",
+    "x402-express": "^0.3.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
