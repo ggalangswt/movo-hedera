@@ -16,7 +16,7 @@ export default function Navbar() {
     },
     {
       name: "GitHub",
-      href: "https://github.com/Movo-Labs/movo-fe-base",
+      href: "https://github.com/ggalangswt/movo-hedera",
       icon: FiGithub,
     },
     { name: "Features", href: "#features", icon: FiZap },
