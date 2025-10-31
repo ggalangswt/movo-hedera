@@ -36,7 +36,7 @@ contract DeployMockIDR is Script {
         
         // Verification information
         console.log("\n=== VERIFICATION COMMAND ===");
-        console.log("forge verify-contract", address(mockIDR), "MockIDR", "--chain-id 84532 --watch");
+        console.log("forge verify-contract", address(mockIDR), "MockIDR", "--chain-id 296 --watch");
     }
 }
 
@@ -44,8 +44,8 @@ contract DeployMockIDR is Script {
 // DEPLOYMENT:
 // 1. Set environment variables:
 //    export PRIVATE_KEY=your_private_key
-//    export BASE_SEPOLIA_RPC_URL=your_rpc_url
+//    export HEDERA_RPC_URL=your_rpc_url
 //    export ETHERSCAN_API_KEY=your_etherscan_api_key
 
 // 2. Deploy:
-//    forge script script/DeployMockIDR.s.sol:DeployMockIDR --rpc-url $BASE_SEPOLIA_RPC_URL --broadcast --verify -vvvv
+//    forge script script/DeployMockIDR.s.sol:DeployMockIDR --rpc-url testnet --broadcast -vvvv
