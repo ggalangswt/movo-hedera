@@ -475,12 +475,12 @@ function initializeWalletClients() {
   walletClient = createWalletClient({
     account,
     chain: baseSepolia,
-    transport: http(process.env.BASE_SEPOLIA_RPC_URL),
+    transport: http(process.env.HEDERA_RPC_URL),
   });
 
   publicClient = createPublicClient({
     chain: baseSepolia,
-    transport: http(process.env.BASE_SEPOLIA_RPC_URL),
+    transport: http(process.env.HEDERA_RPC_URL),
   });
 }
 
