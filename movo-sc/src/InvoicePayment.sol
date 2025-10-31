@@ -37,7 +37,7 @@ contract InvoicePayment is Ownable {
     uint256 public totalSettledInvoices;                  // Total number of settled invoices
     
     // X402 Payment Configuration
-    address public immutable USDC_ADDRESS;                // Official USDC address on Base Sepolia
+    address public immutable USDC_ADDRESS;                // Official USDC address on Hedera testnet
     address public immutable MIDR_ADDRESS;                // Mock IDR token address
     uint256 public constant USDC_TO_MIDR_RATE = 16600;    // 1 USDC = 16600 mIDR (fixed rate)
     uint256 public constant USDC_DECIMALS = 6;            // USDC has 6 decimals
@@ -105,7 +105,7 @@ contract InvoicePayment is Ownable {
     
     /**
      * @dev Constructor sets USDC address, mIDR address, and initial owner
-     * @param _usdcAddress Official USDC address on Base Sepolia
+     * @param _usdcAddress Official USDC address on Hedera testnet
      * @param _midrAddress Mock IDR token address
      * @param _backendAddress Backend address for payment confirmation
      */
