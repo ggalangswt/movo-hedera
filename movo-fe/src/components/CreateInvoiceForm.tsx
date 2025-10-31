@@ -15,6 +15,7 @@ interface CreateInvoiceFormProps {
 
 const currencies = [
   { code: "IDR", name: "Indonesian Rupiah", disabled: false },
+  { code: "ZAR", name: "South African Rand", disabled: true },
   { code: "USD", name: "US Dollar", disabled: true },
   { code: "USDT", name: "Tether", disabled: true },
   { code: "BTC", name: "Bitcoin", disabled: true },
@@ -662,7 +663,7 @@ export default function CreateInvoiceForm({
             </button>
             {!isFormValid() && (
               <p className="text-xs text-red-500 mt-2 text-center">
-                Please fill in all required fields correctly 
+                Please fill in all required fields correctly
               </p>
             )}
           </div>
