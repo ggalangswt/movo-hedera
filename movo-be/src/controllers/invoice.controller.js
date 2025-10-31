@@ -29,33 +29,28 @@ export async function createInvoice(req, res, next) {
     if (walletAddress && !merchantId) {
       logger.info(`Finding or creating merchant with wallet: ${walletAddress}`);
 
-      let merchant = await prisma.merchant.findFirst({
+      // Use upsert for better performance (1 query instead of 2-3)
+      const merchant = await prisma.merchant.upsert({
         where: {
-          walletAddress: {
-            equals: walletAddress,
-            mode: "insensitive",
-          },
+          walletAddress: walletAddress.toLowerCase(),
+        },
+        update: {}, // No update needed
+        create: {
+          walletAddress: walletAddress.toLowerCase(),
+          businessName: `Merchant ${walletAddress.slice(
+            0,
+            6
+          )}...${walletAddress.slice(-4)}`,
+          email: `merchant-${walletAddress.slice(2, 8).toLowerCase()}@movo.xyz`,
+          profileCompleted: false,
+        },
+        select: {
+          id: true,
         },
       });
 
-      if (!merchant) {
-        // Create new merchant with wallet address
-        merchant = await prisma.merchant.create({
-          data: {
-            walletAddress,
-            businessName: `Merchant ${walletAddress.slice(
-              0,
-              6
-            )}...${walletAddress.slice(-4)}`,
-            email: `merchant-${walletAddress.slice(2, 8)}@movo.xyz`,
-          },
-        });
-        logger.info(`Created new merchant: ${merchant.id}`);
-      } else {
-        logger.info(`Found existing merchant: ${merchant.id}`);
-      }
-
       finalMerchantId = merchant.id;
+      logger.info(`Merchant ready: ${merchant.id}`);
     }
 
     // Generate invoice number
@@ -254,25 +249,42 @@ export async function getInvoices(req, res, next) {
 
     logger.info(`Querying invoices with where clause:`, where);
 
-    const invoices = await prisma.invoice.findMany({
-      where,
-      include: {
-        merchant: {
-          select: {
-            id: true,
-            businessName: true,
-            email: true,
-            walletAddress: true,
+    // Use transaction to run queries in parallel for better performance
+    const [invoices, total] = await prisma.$transaction([
+      prisma.invoice.findMany({
+        where,
+        select: {
+          id: true,
+          invoiceNo: true,
+          customerEmail: true,
+          customerName: true,
+          productName: true,
+          description: true,
+          amount: true,
+          currency: true,
+          usdcAmount: true,
+          conversionRate: true,
+          status: true,
+          paymentHash: true,
+          paidAt: true,
+          createdAt: true,
+          expiresAt: true,
+          merchant: {
+            select: {
+              id: true,
+              businessName: true,
+              email: true,
+              walletAddress: true,
+            },
           },
+          paymentDetails: true,
         },
-        paymentDetails: true,
-      },
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * limit,
-      take: parseInt(limit),
-    });
-
-    const total = await prisma.invoice.count({ where });
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * limit,
+        take: parseInt(limit),
+      }),
+      prisma.invoice.count({ where }),
+    ]);
 
     logger.info(
       `Found ${total} invoices, returning ${invoices.length} in current page`

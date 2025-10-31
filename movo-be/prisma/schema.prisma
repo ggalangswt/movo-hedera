@@ -22,6 +22,8 @@ model Merchant {
   invoices          Invoice[]
   
   @@map("merchants")
+  @@index([walletAddress])
+  @@index([createdAt])
 }
 
 model Invoice {
@@ -67,6 +69,10 @@ model Invoice {
   @@index([status])
   @@index([customerEmail])
   @@index([invoiceNo])
+  @@index([merchantId])
+  @@index([createdAt])
+  @@index([expiresAt])
+  @@index([status, merchantId])
 }
 
 model PaymentDetail {
@@ -97,6 +103,9 @@ model PaymentDetail {
   invoice           Invoice   @relation(fields: [invoiceId], references: [id])
   
   @@map("payment_details")
+  @@index([invoiceId])
+  @@index([transactionHash])
+  @@index([paidAt])
 }
 
 enum InvoiceStatus {

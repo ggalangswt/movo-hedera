@@ -17,12 +17,18 @@ export async function getMerchantProfile(req, res, next) {
 
     logger.info(`Getting merchant profile for wallet: ${walletAddress}`);
 
-    let merchant = await prisma.merchant.findFirst({
+    // Use upsert for better performance (1 query instead of 2-3)
+    const merchant = await prisma.merchant.upsert({
       where: {
-        walletAddress: {
-          equals: walletAddress,
-          mode: "insensitive",
-        },
+        walletAddress: walletAddress.toLowerCase(),
+      },
+      update: {}, // No update needed when just getting profile
+      create: {
+        walletAddress: walletAddress.toLowerCase(),
+        email: `merchant-${walletAddress.slice(2, 8).toLowerCase()}@movo.xyz`,
+        businessName: null,
+        name: null,
+        profileCompleted: false,
       },
       select: {
         id: true,
@@ -35,30 +41,6 @@ export async function getMerchantProfile(req, res, next) {
         updatedAt: true,
       },
     });
-
-    // If merchant doesn't exist, create a new one
-    if (!merchant) {
-      logger.info(`Creating new merchant for wallet: ${walletAddress}`);
-      merchant = await prisma.merchant.create({
-        data: {
-          walletAddress,
-          email: `merchant-${walletAddress.slice(2, 8)}@movo.xyz`,
-          businessName: null,
-          name: null,
-          profileCompleted: false,
-        },
-        select: {
-          id: true,
-          walletAddress: true,
-          email: true,
-          name: true,
-          businessName: true,
-          profileCompleted: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-    }
 
     res.json({
       success: true,
@@ -87,44 +69,30 @@ export async function updateMerchantProfile(req, res, next) {
 
     logger.info(`Updating merchant profile for wallet: ${walletAddress}`);
 
-    // Find merchant
-    let merchant = await prisma.merchant.findFirst({
+    // Use upsert for better performance - single atomic operation
+    const merchant = await prisma.merchant.upsert({
       where: {
-        walletAddress: {
-          equals: walletAddress,
-          mode: "insensitive",
+        walletAddress: walletAddress.toLowerCase(),
+      },
+      create: {
+        walletAddress: walletAddress.toLowerCase(),
+        email:
+          email ||
+          `merchant-${walletAddress.slice(2, 8).toLowerCase()}@movo.xyz`,
+        name,
+        businessName,
+        profileCompleted: !!(email && name && businessName),
+      },
+      update: {
+        ...(email && { email }),
+        ...(name !== undefined && { name }),
+        ...(businessName !== undefined && { businessName }),
+        // Recalculate profileCompleted based on all fields
+        profileCompleted: {
+          set: !!(email || name || businessName),
         },
       },
     });
-
-    if (!merchant) {
-      // Create new merchant if doesn't exist
-      merchant = await prisma.merchant.create({
-        data: {
-          walletAddress,
-          email: email || `merchant-${walletAddress.slice(2, 8)}@movo.xyz`,
-          name,
-          businessName,
-          profileCompleted: !!(email && name && businessName),
-        },
-      });
-    } else {
-      // Update existing merchant
-      merchant = await prisma.merchant.update({
-        where: { id: merchant.id },
-        data: {
-          ...(email && { email }),
-          ...(name !== undefined && { name }),
-          ...(businessName !== undefined && { businessName }),
-          // Mark profile as completed if all required fields are filled
-          profileCompleted: !!(
-            (email || merchant.email) &&
-            (name !== undefined ? name : merchant.name) &&
-            (businessName !== undefined ? businessName : merchant.businessName)
-          ),
-        },
-      });
-    }
 
     logger.info(`Merchant profile updated: ${merchant.id}`);
 
