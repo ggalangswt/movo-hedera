@@ -194,7 +194,8 @@ export async function getPaymentDetails(req, res, next) {
     // Client will retry THIS endpoint with X-PAYMENT header (x402 spec)
     // Use local facilitator to avoid CORS issues - frontend can call backend directly
     const facilitatorUrl =
-      process.env.X402_FACILITATOR_URL || `${backendUrl}/api/facilitator`;
+      process.env.NEXT_PUBLIC_X402_FACILITATOR_URL ||
+      `${backendUrl}/api/facilitator`;
 
     return res.status(402).json({
       x402Version: 1,
