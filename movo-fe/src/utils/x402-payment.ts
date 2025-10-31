@@ -52,7 +52,7 @@ export interface PaymentDetails {
 export async function processX402Payment(
   walletClient: WalletClient,
   paymentEndpoint: string,
-  facilitatorUrl: string = process.env.FACILITATOR_URL ||
+  facilitatorUrl: string = process.env.NEXT_PUBLIC_X402_FACILITATOR_URL ||
     "http://localhost:4000/api/facilitator"
 ) {
   // Step 1: Get 402 payment details
